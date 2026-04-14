@@ -9,6 +9,9 @@ const GENERATE_MAX_LENGTH = 3;
 /** Random samples can use strings up to this length (longer strings than the initial listing). */
 const SAMPLE_MAX_LENGTH = 20;
 
+/** 🔥 FIX: Use deployed backend instead of localhost/relative path */
+const API = "https://tafl-visualisation-project.onrender.com/api";
+
 export default function Playground() {
   const location = useLocation();
   const [regex, setRegex] = useState('(a|b)*');
@@ -33,14 +36,18 @@ export default function Playground() {
     setGenLoading(true);
     setSampledStrings([]);
     setSampleMessage('');
+
     try {
-      const res = await fetch('/api/generate', {
+      const res = await fetch(`${API}/generate`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ regex, maxLength: GENERATE_MAX_LENGTH }),
       });
+
       const data = await res.json();
+
       if (!res.ok) throw new Error(data.error || 'Generation failed');
+
       setGroupedStrings(data.groupedStrings);
       setAllStrings(data.allStrings || []);
     } catch (e) {
@@ -54,10 +61,12 @@ export default function Playground() {
 
   async function handleSampleMore() {
     if (groupedStrings === null) return;
+
     setSampleLoading(true);
     setSampleMessage('');
+
     try {
-      const res = await fetch('/api/sample', {
+      const res = await fetch(`${API}/sample`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -67,11 +76,15 @@ export default function Playground() {
           sampledStrings,
         }),
       });
+
       const data = await res.json();
+
       if (!res.ok) throw new Error(data.error || 'Sampling failed');
+
       if (data.message) {
         setSampleMessage(data.message);
       }
+
       if (data.newSamples?.length) {
         setSampledStrings((prev) => [...prev, ...data.newSamples]);
       }
@@ -90,6 +103,7 @@ export default function Playground() {
         lists every member up to length {GENERATE_MAX_LENGTH}; use <strong>Generate 5 more examples</strong> for
         additional samples (up to length {SAMPLE_MAX_LENGTH}), avoiding duplicates with that listing.
       </p>
+
       <div className="panel-grid">
         <GeneratorPanel
           regex={regex}
@@ -103,6 +117,7 @@ export default function Playground() {
           sampledStrings={sampledStrings}
           sampleMessage={sampleMessage}
         />
+
         <MembershipPanel regex={regex} />
         <EquivalencePanel />
       </div>
