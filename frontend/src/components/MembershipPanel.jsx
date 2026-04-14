@@ -1,5 +1,8 @@
 import { useState } from 'react';
 
+/** 🔥 Correct backend base URL */
+const API = "https://tafl-visualisation-project.onrender.com/api";
+
 export default function MembershipPanel({ regex }) {
   const [testString, setTestString] = useState('');
   const [result, setResult] = useState(null);
@@ -10,14 +13,25 @@ export default function MembershipPanel({ regex }) {
     setError('');
     setLoading(true);
     setResult(null);
+
     try {
-      const res = await fetch('/api/membership', {
+      const res = await fetch(`${API}/membership`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ regex, string: testString }),
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          regex,
+          string: testString
+        })
       });
+
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error || 'Request failed');
+
+      if (!res.ok) {
+        throw new Error(data.error || 'Request failed');
+      }
+
       setResult(data.accepted);
     } catch (e) {
       setError(e.message);
@@ -30,6 +44,7 @@ export default function MembershipPanel({ regex }) {
     <section className="panel">
       <p className="panel-label">Membership</p>
       <h2>Does a string belong to L(r)?</h2>
+
       <div className="field">
         <label htmlFor="mem-str">Input string</label>
         <input
@@ -40,20 +55,30 @@ export default function MembershipPanel({ regex }) {
           spellCheck={false}
         />
       </div>
-      <button type="button" className="btn" onClick={check} disabled={loading}>
+
+      <button
+        type="button"
+        className="btn"
+        onClick={check}
+        disabled={loading}
+      >
         {loading ? 'Checking…' : 'Test membership'}
       </button>
-      {error ? <p className="error-text">{error}</p> : null}
-      {result === true ? (
+
+      {error && <p className="error-text">{error}</p>}
+
+      {result === true && (
         <p className="success-text" style={{ fontFamily: 'var(--font-mono)', margin: 0 }}>
           Accepted ✓
         </p>
-      ) : null}
-      {result === false ? (
+      )}
+
+      {result === false && (
         <p className="reject-text" style={{ fontFamily: 'var(--font-mono)', margin: 0 }}>
           Rejected ✗
         </p>
-      ) : null}
+      )}
+
       <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', margin: 0 }}>
         Uses the same regex as the generator field above.
       </p>
