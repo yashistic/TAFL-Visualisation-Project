@@ -133,6 +133,3 @@ Yash Mittal
 
 ---
 
-## 📄 License
-
-This project is for academic use.
