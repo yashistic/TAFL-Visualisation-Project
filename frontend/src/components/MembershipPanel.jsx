@@ -27,21 +27,49 @@ export default function MembershipPanel({ regex, onCheck }) {
       <h2>Does a string belong to L(r)?</h2>
 
       <div className="field">
-        <label>Input string</label>
+        <label htmlFor="mem-str">Input string</label>
         <input
+          id="mem-str"
           value={testString}
           onChange={(e) => setTestString(e.target.value)}
           placeholder="aba"
+          spellCheck={false}
         />
       </div>
 
-      <button onClick={check} disabled={loading}>
+      {/* 🔥 IMPORTANT: keep button class */}
+      <button
+        type="button"
+        className="btn"
+        onClick={check}
+        disabled={loading}
+      >
         {loading ? 'Checking…' : 'Test membership'}
       </button>
 
       {error && <p className="error-text">{error}</p>}
-      {result === true && <p className="success-text">Accepted ✓</p>}
-      {result === false && <p className="reject-text">Rejected ✗</p>}
+
+      {result === true && (
+        <p
+          className="success-text"
+          style={{ fontFamily: 'var(--font-mono)', margin: 0 }}
+        >
+          Accepted ✓
+        </p>
+      )}
+
+      {result === false && (
+        <p
+          className="reject-text"
+          style={{ fontFamily: 'var(--font-mono)', margin: 0 }}
+        >
+          Rejected ✗
+        </p>
+      )}
+
+      <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', margin: 0 }}>
+        Uses the same regex as the generator field above.
+      </p>
     </section>
   );
 }
