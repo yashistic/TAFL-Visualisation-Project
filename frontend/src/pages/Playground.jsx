@@ -10,7 +10,7 @@ const GENERATE_MAX_LENGTH = 3;
 const SAMPLE_MAX_LENGTH = 20;
 
 /** 🔥 FIX: Use deployed backend instead of localhost/relative path */
-const API = "https://tafl-visualisation-project.onrender.com/api";
+const API = "https://tafl-visualisation-project-p1texrbnu.vercel.app/api";
 
 export default function Playground() {
   const location = useLocation();
